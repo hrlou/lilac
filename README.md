@@ -1,2 +1,2 @@
 # lilac
-My operating system project in C++
+My operating system project in C/C++
