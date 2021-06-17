@@ -4,9 +4,11 @@ CC=$(ARCH)-elf-gcc
 CXX=$(ARCH)-elf-g++
 LD=$(ARCH)-elf-ld
 PWD=$(shell pwd)
-SYSROOT=$(PWD)/root
-DEST_DIR=$(SYSROOT)
+DEST_DIR=$(PWD)/root
+INCLUDE_DIR=/usr/include
+LIB_DIR=/usr/lib
 export
+MAKE:=$(MAKE) --no-print-directory
 
 .PHONY: all headers libs iso clean
 all: kernel
@@ -31,11 +33,3 @@ clean:
 	-rm -rf root lilac.iso
 	@$(MAKE) -C kernel clean
 	@$(MAKE) -C libc clean
-
-
-# all: $(KERNEL)
-# $(KERNEL) : $(KERNEL_BUILD_DIR)/$(KERNEL).iso
-
-# $(KERNEL_BUILD_DIR)/$(KERNEL).iso : $(KERNEL_BUILD_DIR)/$(KERNEL).bin
-# 	cp $< $(KERNEL_ARCH_DIR)/iso/boot/kernel.bin
-# 	grub-mkrescue /usr/lib/grub/i386-pc -o $@ $(KERNEL_ARCH_DIR)/iso

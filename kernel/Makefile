@@ -1,4 +1,6 @@
 DEST_DIR?=./root
+INCLUDE_DIR?=/usr/include
+LIB_DIR?=/usr/lib
 ARCH?=x86_64
 BUILD_DIR?=./build
 ARCH_DIR=./arch/$(ARCH)
@@ -13,8 +15,8 @@ CFILES=$(shell find . -type f -regex ".*\.c")
 CXXFILES=$(shell find . -type f -regex ".*\.cpp")
 
 OBJS=$(ASMFILES:%.asm=$(BUILD_DIR)/%.o) $(CFILES:%.c=$(BUILD_DIR)/%.o) $(CXXFILES:%.cpp=$(BUILD_DIR)/%.o)
-INCLUDE=-I./include -I$(DEST_DIR)/usr/include
-LDFLAGS=-L$(DEST_DIR)/usr/lib -lk
+INCLUDE=-I./include -I$(DEST_DIR)$(INCLUDE_DIR)
+LDFLAGS=-L$(DEST_DIR)$(LIB_DIR) -lk
 
 .PHONY: install clean
 
@@ -39,13 +41,13 @@ $(BUILD_DIR)/%.o : %.cpp
 install: install-headers install-kernel
 
 install-headers:
-	mkdir -p $(DEST_DIR)/usr/include
-	cp -R --preserve=timestamps include/. $(DEST_DIR)/usr/include/.
+	@mkdir -p $(DEST_DIR)$(INCLUDE_DIR)
+	-cp -R --preserve=timestamps include/. $(DEST_DIR)$(INCLUDE_DIR)/.
 
 install-kernel: $(KERNEL)
-	mkdir -p $(DEST_DIR)/boot
-	cp $< $(DEST_DIR)/boot/
-	cp -r $(ARCH_DIR)/grub $(DEST_DIR)/boot/
+	@mkdir -p $(DEST_DIR)/boot
+	-cp $< $(DEST_DIR)/boot/
+	-cp -r $(ARCH_DIR)/grub $(DEST_DIR)/boot/
 
 clean:
 	-rm -rf $(BUILD_DIR)
